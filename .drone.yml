@@ -1,0 +1,21 @@
+kind: pipeline
+name: deploy
+
+steps:
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: 89.104.69.222
+      username: root
+      password:
+        from_secret: ssh_password
+      script:
+        - rm -fr /home/tailly_ru
+        - mkdir /home/tailly_ru
+        - cd /home/tailly_ru
+        - git clone https://admin:12345678@git.altomta.ru/admin/tailly_back_v2 . || true
+        - git pull
+        - docker stop tailly_back || true
+        - docker rm tailly_back || true
+        - DOCKER_BUILDKIT=1 docker build -t tailly_back .
+        - docker run -d --name tailly_back --network tailly_net -p 3006:3006 -p 9100:9100 tailly_back
