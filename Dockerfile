@@ -1,0 +1,27 @@
+FROM golang:1.25rc3-alpine AS builder
+
+RUN apk add --no-cache git ca-certificates build-base
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /app/server ./cmd/server/main.go
+
+FROM alpine:3.19
+
+RUN apk add --no-cache ca-certificates tzdata
+
+COPY --from=builder /app/server /usr/local/bin/server
+
+ENV GIN_MODE=release
+ENV PORT=3006
+
+EXPOSE ${PORT}
+
+CMD ["server"]
