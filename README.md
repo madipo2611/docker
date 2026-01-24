@@ -54,8 +54,7 @@ You can now use your cluster with:
 kubectl cluster-info --context kind-test
 
 Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
-mark@docker:~$ kind get nodes
-No kind nodes found for cluster "kind".
+
 mark@docker:~$ kubectl get nodes
 NAME                 STATUS   ROLES           AGE   VERSION
 test-control-plane   Ready    control-plane   34s   v1.35.0
